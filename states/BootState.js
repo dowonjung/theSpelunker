@@ -7,17 +7,16 @@ var bootState = {
         game.load.image('tiles','assets/tilemaps/theSpelunker_tilemap.png');
         
         // Player
-        game.load.spritesheet('playerAnm','assets/spritesheets/player_animations_combined_ver_2.png', 700, 1045);
+        game.load.spritesheet('playerSprite','assets/spritesheets/player_animations_combined_ver_2.png', 700, 1045);
         
         // Monsters
-        game.load.spritesheet('slimeAttack','assets/spritesheets/slime_attack_spritesheet.png',631,679);
-        game.load.spritesheet('slimeMove','assets/spritesheets/slime_move_spritesheet.png',631,679);
+        game.load.spritesheet('slimeSprite','assets/spritesheets/slime_spritesheet_combined.png',631,679);
         
         // Audio
         game.load.audio('level3Theme', 'assets/music/level3.mp3');
     },
     
     create: function() {
-        game.state.start('State0');
+        game.state.start('tutorial');
     }
 };

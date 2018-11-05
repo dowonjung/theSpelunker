@@ -1,4 +1,4 @@
-var state0 = {
+var tutorial = {
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 400;
@@ -16,7 +16,7 @@ var state0 = {
         map.setCollisionBetween(1, 12, true, 'ground');
         
         // Player
-        player = game.add.sprite(100, 100, 'playerAnm');
+        player = game.add.sprite(100, 100, 'playerSprite');
         player.animations.add('stand', [0], 1, true);
         player.animations.add('run', [1, 2, 3, 4, 5, 6], 10, true);
         player.anchor.setTo(0.5, 0.5);
@@ -38,8 +38,9 @@ var state0 = {
         menuButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
         
         // Slime
-        slime = game.add.sprite(600, 600, 'slimeMove');
-        slime.animations.add('slimeWalk');
+        slime = game.add.sprite(600, 600, 'slimeSprite');
+        slimeWalk = slime.animations.add('slimeWalk', [0, 1, 2, 3], 10, true);
+        slimeAttack = slime.animations.add('slimeAttack', [4, 5, 6], 5, true);
         slime.anchor.setTo(0.5, 0.5);
         slime.scale.setTo(0.2, 0.2);
         game.physics.enable(slime);
@@ -76,34 +77,29 @@ var state0 = {
         
         // Slime Movement
         game.physics.arcade.collide(slime, ground);
+        this.slimeControl();       
+    },
+    
+    slimeControl: function(){
         if (player.x <= slime.x){
             slime.body.velocity.x = -50;
             slime.scale.setTo(-0.2, 0.2);
-            slime.play('slimeWalk', 10, true);
+            slime.play('slimeWalk');
+            if (game.time.now - timer == 5000) {
+                slime.play('slimeAttack');
+            }
         } else {
             slime.body.velocity.x = 50;
             slime.scale.setTo(0.2, 0.2);
-            slime.play('slimeWalk', 10, true);
+            slime.play('slimeWalk');
+            if (game.time.now - timer == 5000) {
+                slime.play('slimeAttack');
+            }
         }
-        
-        // Slime Attack
-        //game.time.events.loop(Phaser.Timer.SECOND*5, this.slimeAttack, this);
-    },
-        
-    slimeAttack: function(){
-        slime.loadTexture('slimeAttack', 0);
-        slime.animations.add('slimeAttack');
-        if (player.x <= slime.x){
-            slime.scale.setTo(-0.2, 0.2);
-            slime.play('slimeAttack', 2, false, true);
-        } else {
-            slime.scale.setTo(0.2, 0.2);
-            slime.play('slimeAttack', 2, false, true);
-        }
-        game.physics.arcade.overlap(player, slime, this.isDamaged, null, this);
+        game.physics.arcade.overlap(player, slime, this.playerDamaged, null, this);
     },
     
-    isDamaged: function(){
+    playerDamaged: function(){
         HP -= 1;
     },
 };
