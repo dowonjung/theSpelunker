@@ -16,7 +16,7 @@ var state0 = {
         map.setCollisionBetween(1, 12, true, 'ground');
         
         // Player
-        player = game.add.sprite(200, game.world.centerY, 'playerAnm');
+        player = game.add.sprite(100, 100, 'playerAnm');
         player.animations.add('stand', [0], 1, true);
         player.animations.add('run', [1, 2, 3, 4, 5, 6], 10, true);
         player.anchor.setTo(0.5, 0.5);
@@ -33,9 +33,9 @@ var state0 = {
         // Keyboard
         cursors = game.input.keyboard.createCursorKeys();
         jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        attackButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
-        fireButton = game.input.keyboard.addKey(Phaser.Keyboard.S);
-        accessMenuButton = game.input.keyboard.addKey(Phaser.Keyboard.A);
+        attackButton = game.input.keyboard.addKey(Phaser.Keyboard.S);
+        fireButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
+        menuButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
         
         // Slime
         slime = game.add.sprite(600, 600, 'slimeMove');
@@ -45,6 +45,9 @@ var state0 = {
         game.physics.enable(slime);
         slime.body.collideWorldBounds = true;
         slime.health = 50;
+        
+        // Tutorial Text
+        game.add.text(game.world.width-220, 10, 'Move: Left or Right Arrow Key \nJump: Spacebar \nSword Slash: S \nGun Shooting: D \nAccess Menu: M', {font: '16px Helvetica', fill: '#fff'});
     },
 
     update: function() {
