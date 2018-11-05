@@ -7,9 +7,9 @@ var bootState = {
         game.load.image('tiles','assets/tilemaps/theSpelunker_tilemap.png');
         
         // Player
-        game.load.spritesheet('playerSprite','assets/spritesheets/player_spritesheet.png', 660, 1045);
+        game.load.spritesheet('playerAnm','assets/spritesheets/player_animations_combined_ver_2.png', 700, 1045);
         
-        // Boss
+        // Monsters
         game.load.spritesheet('slimeAttack','assets/spritesheets/slime_attack_spritesheet.png',631,679);
         game.load.spritesheet('slimeMove','assets/spritesheets/slime_move_spritesheet.png',631,679);
         
