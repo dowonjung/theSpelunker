@@ -81,6 +81,7 @@ var tutorial = {
     },
     
     slimeControl: function(){
+        timer = 0;
         if (player.x <= slime.x){
             slime.body.velocity.x = -50;
             slime.scale.setTo(-0.2, 0.2);
