@@ -80,13 +80,7 @@ var tutorial = {
         game.physics.arcade.collide(slime, ground);
     },
     
-<<<<<<< HEAD
     slimeWalk: function(){
-        console.log('walk');
-=======
-    slimeControl: function(){
-        timer = 0;
->>>>>>> 610f66e3da2693f82af73cf19d60c3914eb2ab49
         if (player.x <= slime.x){
             slime.body.velocity.x = -30;
             slime.scale.setTo(-0.2, 0.2);
@@ -107,7 +101,6 @@ var tutorial = {
     },
     
     slimeAttack: function(){
-        console.log('attack');
         if (player.x <= slime.x){
             slime.body.velocity.x = 0;
             slime.scale.setTo(-0.2, 0.2);

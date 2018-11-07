@@ -10,7 +10,7 @@ var bootState = {
         game.load.spritesheet('playerSprite','assets/spritesheets/player_animations_combined_ver_2.png', 700, 1045);
         
         // Monsters
-        game.load.spritesheet('slimeSprite','assets/spritesheets/slime_spritesheet_combined.png',631,679);
+        game.load.spritesheet('slimeSprite','assets/spritesheets/slime_spritesheet_combined.png',599,679);
         
         // Audio
         game.load.audio('level3Theme', 'assets/music/level3.mp3');
