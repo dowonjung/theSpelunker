@@ -39,13 +39,14 @@ var tutorial = {
         
         // Slime
         slime = game.add.sprite(600, 600, 'slimeSprite');
-        slimeWalk = slime.animations.add('slimeWalk', [0, 1, 2, 3], 10, true);
-        slimeAttack = slime.animations.add('slimeAttack', [4, 5, 6], 5, true);
+        slimeWalk = slime.animations.add('slimeWalk', [0, 1, 2, 3]);
+        slimeAttack = slime.animations.add('slimeAttack', [4, 5, 6]);
         slime.anchor.setTo(0.5, 0.5);
         slime.scale.setTo(0.2, 0.2);
         game.physics.enable(slime);
         slime.body.collideWorldBounds = true;
         slime.health = 50;
+        this.slimeWalk();
         
         // Tutorial Text
         game.add.text(game.world.width-220, 10, 'Move: Left or Right Arrow Key \nJump: Spacebar \nSword Slash: S \nGun Shooting: D \nAccess Menu: M', {font: '16px Helvetica', fill: '#fff'});
@@ -77,30 +78,51 @@ var tutorial = {
         
         // Slime Movement
         game.physics.arcade.collide(slime, ground);
-        this.slimeControl();       
     },
     
+<<<<<<< HEAD
+    slimeWalk: function(){
+        console.log('walk');
+=======
     slimeControl: function(){
         timer = 0;
+>>>>>>> 610f66e3da2693f82af73cf19d60c3914eb2ab49
         if (player.x <= slime.x){
-            slime.body.velocity.x = -50;
+            slime.body.velocity.x = -30;
             slime.scale.setTo(-0.2, 0.2);
-            slime.play('slimeWalk');
-            if (game.time.now - timer == 5000) {
-                slime.play('slimeAttack');
-            }
+            slime.play('slimeWalk', 10, true);
         } else {
-            slime.body.velocity.x = 50;
+            slime.body.velocity.x = 30;
             slime.scale.setTo(0.2, 0.2);
-            slime.play('slimeWalk');
-            if (game.time.now - timer == 5000) {
-                slime.play('slimeAttack');
-            }
+            slime.play('slimeWalk', 10, true);
+        }
+        slimeWalk.onLoop.add(this.monsterWalkLooped, this);
+        slimeWalk.onComplete.add(this.slimeAttack, this);
+    },
+    
+    monsterWalkLooped: function(sprite, animation){
+        if (animation.loopCount === 3){
+            animation.loop = false;
+        }
+    },
+    
+    slimeAttack: function(){
+        console.log('attack');
+        if (player.x <= slime.x){
+            slime.body.velocity.x = 0;
+            slime.scale.setTo(-0.2, 0.2);
+            slime.play('slimeAttack', 5, false);
+        } else {
+            slime.body.velocity.x = 0;
+            slime.scale.setTo(0.2, 0.2);
+            slime.play('slimeAttack', 5, false);
         }
         game.physics.arcade.overlap(player, slime, this.playerDamaged, null, this);
+        slimeAttack.onComplete.add(this.slimeWalk, this);
     },
     
     playerDamaged: function(){
         HP -= 1;
+        console.log(HP);
     },
 };
