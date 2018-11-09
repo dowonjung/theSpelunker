@@ -30,6 +30,24 @@ var tutorial = {
         type = 'player';
         fireCoolDown = 0;
         
+        //hitboxes
+        //player.addChild();//hit box for idle
+        //hit box for move left
+        //hit box for move right
+        //hit box for attack left
+        //hit box for attack right
+        //hit box for jump
+        hitboxes = game.add.group();
+        hitboxes.enableBody = true;
+        player.addChild(hitboxes);
+        hitbox1 = hitboxes.create(0,0,null);
+        hitbox1.anchor.setTo(.5,.5); //anchor at middle of player
+        hitbox1.body.onOverlap = new Phaser.Signal();
+        hitbox.body.onOverlap.add(attack);
+        hitbox1.body.enable = false;
+        
+        
+        
         // Keyboard
         cursors = game.input.keyboard.createCursorKeys();
         jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
