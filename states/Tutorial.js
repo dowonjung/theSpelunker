@@ -19,35 +19,29 @@ var tutorial = {
         player = game.add.sprite(100, 100, 'playerSprite');
         player.animations.add('run', [0, 1, 2, 3, 4, 5], 10, true);
         player.animations.add('stand', [6], 1, true);
-        player.animations.add('attack', [8, 9, 10], 10, true);
+        player.animations.add('jump', [7], 1, true);
+        player.animations.add('attack', [8, 9, 10], 5, false);
         player.anchor.setTo(0.5, 0.5);
         player.scale.setTo(0.2, 0.2);
         game.physics.enable(player);
         player.body.collideWorldBounds = true;
         game.camera.follow(player);
+        player.body.setSize(200, 10, 120, 517);
         
-        alive = true;
         HP = 5;
-        fireCoolDown = 0;
         attacking = false;
+        facing = 1;
         
-        //hitboxes
-        //player.addChild();//hit box for idle
-        //hit box for move left
-        //hit box for move right
-        //hit box for attack left
-        //hit box for attack right
-        //hit box for jump
+        // Hitboxes
         hitboxes = game.add.group();
         hitboxes.enableBody = true;
         player.addChild(hitboxes);
-        hitbox1 = hitboxes.create(0,0,null);
-        hitbox1.anchor.setTo(.5,.5); //anchor at middle of player
+        
+        hitbox1 = hitboxes.create(0, 0, null);
+        hitbox1.anchor.setTo(0.5, 0.5);
         hitbox1.body.onOverlap = new Phaser.Signal();
-        hitbox.body.onOverlap.add(attack);
-        hitbox1.body.enable = false;
-        
-        
+        hitbox1.body.onOverlap.add(this.attackHit);
+        hitbox1.body.enable = false;        
         
         // Keyboard
         cursors = game.input.keyboard.createCursorKeys();
@@ -63,43 +57,80 @@ var tutorial = {
         slime.scale.setTo(0.2, 0.2);
         game.physics.enable(slime);
         slime.body.collideWorldBounds = true;
-        slime.health = 50;
+        slime.body.setSize(700, 550, 0, 129);
         this.slimeWalk();
         
         // Tutorial Text
-        game.add.text(game.world.width-220, 10, 'Move: Left or Right Arrow Key \nJump: Spacebar \nSword Slash: D \nAccess Menu: M', {font: '16px Helvetica', fill: '#fff'});
+        game.add.text(game.world.width-220, 10, 'Move: Left or Right Arrow Key \nJump: Spacebar \nAttack: D \nAccess Menu: M', {font: '16px Helvetica', fill: '#fff'});
     },
 
-    update: function() {
-        // Player Movement
+    update: function() { 
+        // Hitboxes
+        game.physics.arcade.overlap(hitbox1, slime);
+        if (attacking) {
+            hitbox1.body.setSize(64, 64, 32*facing, -40);
+        }
+        
+        // Player Attack and Movement
         game.physics.arcade.collide(player, ground);
         
-        if (cursors.left.isDown) {
-            player.body.velocity.x = -125;
-            player.scale.setTo(-0.2, 0.2);
-            player.play('run');
-        
-        } else if (cursors.right.isDown) {
-            player.body.velocity.x = 125;
-            player.scale.setTo(0.2, 0.2);
-            player.play('run');
-        
-        } else {
+        if (attackButton.isDown) {
             player.body.velocity.x = 0;
-            player.play('stand');
+            if (attackButton.justPressed()) {
+                this.playerAttack();
+            }
         }
         
         if (jumpButton.isDown && player.body.onFloor()) {
             player.body.velocity.y = -400;
         }
         
-        if (attackButton.isDown) {
-            player.scale.setTo(0.2, 0.2);
-            player.play('attack');
+        if (!attackButton.isDown) {
+            if (player.body.onFloor()) {
+                if (cursors.left.isDown) {
+                    player.body.velocity.x = -150;
+                    player.scale.setTo(-0.2, 0.2);
+                    facing = -1;
+                    player.play('run');
+                } else if (cursors.right.isDown) {
+                    player.body.velocity.x = 150;
+                    player.scale.setTo(0.2, 0.2);
+                    facing = 1;
+                    player.play('run');
+                } else {
+                    player.body.velocity.x = 0;
+                    player.play('stand');
+                }
+            } else {
+                player.play('jump');
+            }
         }
         
         // Slime Movement
         game.physics.arcade.collide(slime, ground);
+    },
+    
+    render: function(){
+        game.debug.body(player);
+        game.debug.body(hitbox1);
+    },
+    
+    playerAttack: function(){
+        if (!attacking) {
+            attacking = true;
+            hitbox1.body.enable = true;
+            player.play('attack');
+            var atkTimer = game.time.create(true);
+            atkTimer.add(200, function(){
+                attacking = false;
+                hitbox1.body.enable = false;
+            }, this);
+            atkTimer.start();
+        }
+    },
+    
+    attackHit: function(){
+        
     },
     
     slimeWalk: function(){
@@ -138,6 +169,6 @@ var tutorial = {
     
     playerDamaged: function(){
         HP -= 1;
-        console.log(HP);
+        console.log('HP='+HP);
     },
 };

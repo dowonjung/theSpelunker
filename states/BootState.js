@@ -13,7 +13,8 @@ var bootState = {
         game.load.spritesheet('slimeSprite','assets/spritesheets/slime_spritesheet_combined.png',599,679);
         
         // Audio
-        game.load.audio('level3Theme', 'assets/music/level3.mp3');
+        game.load.audio('mainBG', 'assets/music/bg_music.wav');
+        game.load.audio('bossBG', 'assets/music/final_boss_music.wav');
     },
     
     create: function() {
