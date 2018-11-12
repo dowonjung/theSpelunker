@@ -62,13 +62,18 @@ var tutorial = {
         
         // Tutorial Text
         game.add.text(game.world.width-220, 10, 'Move: Left or Right Arrow Key \nJump: Spacebar \nAttack: D \nAccess Menu: M', {font: '16px Helvetica', fill: '#fff'});
+        
+        // Music
+        mainBG = game.add.audio('mainBG');
+        mainBG.play();
     },
 
     update: function() { 
         // Hitboxes
         game.physics.arcade.overlap(hitbox1, slime);
+        game.physics.arcade.collide(hitbox1, ground);
         if (attacking) {
-            hitbox1.body.setSize(64, 64, 32*facing, -40);
+            hitbox1.body.setSize(64, 96, 36*facing, -40);
         }
         
         // Player Attack and Movement
@@ -82,7 +87,7 @@ var tutorial = {
         }
         
         if (jumpButton.isDown && player.body.onFloor()) {
-            player.body.velocity.y = -400;
+            player.body.velocity.y = -375;
         }
         
         if (!attackButton.isDown) {

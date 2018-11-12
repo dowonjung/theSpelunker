@@ -2,6 +2,11 @@ var bootState = {
     preload: function() {
         game.load.image('background1', 'assets/backgrounds/game_background_1.png');
         
+        // Loading Bar
+        game.load.image('loading', 'assets/sprites/loading.png');
+        var loadingBar = game.add.sprite(game.world.centerX, 400, 'loading');
+        this.load.setPreloadSprite(loadingBar);
+        
         // Tilemap and Tiles
         game.load.tilemap('tilemap', 'assets/tilemaps/theSpelunker_tilemap.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tiles','assets/tilemaps/theSpelunker_tilemap.png');
@@ -18,6 +23,6 @@ var bootState = {
     },
     
     create: function() {
-        game.state.start('tutorial');
+        game.state.start('main');
     }
 };
