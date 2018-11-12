@@ -130,7 +130,7 @@ var tutorial = {
     },
     
     attackHit: function(){
-        
+        slime.kill();
     },
     
     slimeWalk: function(){
