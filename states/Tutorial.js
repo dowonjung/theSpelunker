@@ -61,7 +61,7 @@ var tutorial = {
         this.slimeWalk();
         
         // Tutorial Text
-        game.add.text(game.world.width-220, 10, 'Move: Left or Right Arrow Key \nJump: Spacebar \nAttack: D \nAccess Menu: M', {font: '16px Helvetica', fill: '#fff'});
+        game.add.text(game.world.width-220, 10, 'Move: LEFT/RIGHT ARROW \nJump: SPACEBAR \nAttack: D \nMenu: M', {font: '16px Helvetica', fill: '#fff'});
         
         // Music
         mainBG = game.add.audio('mainBG');
@@ -111,8 +111,13 @@ var tutorial = {
             }
         }
         
-        // Slime Movement
+        // Enemy Physics
         game.physics.arcade.collide(slime, ground);
+        
+        // Pause Menu
+        if (menuButton.isDown) {
+            
+        }
     },
     
     render: function(){
