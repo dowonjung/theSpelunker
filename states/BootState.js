@@ -13,7 +13,7 @@ var bootState = {
         game.load.spritesheet('slimeSprite','assets/spritesheets/slime_spritesheet_combined.png',599,679);
         
         // Health Orb
-        game.load.sprite('healthOrb', 'assets/sprites/health_orb.png');
+        game.load.image('healthOrb', 'assets/sprites/health_orb.png');
         
         // Audio
         game.load.audio('mainBG', 'assets/music/bg_music.wav');

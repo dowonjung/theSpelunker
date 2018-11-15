@@ -1,7 +1,7 @@
 var tutorial = {
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.physics.arcade.gravity.y = 400;
+        game.physics.arcade.gravity.y = 325;
         game.world.setBounds(0,0,800,800);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.tileSprite(0, 0, 800, 800, 'background1');
@@ -87,18 +87,18 @@ var tutorial = {
         }
         
         if (jumpButton.isDown && player.body.onFloor()) {
-            player.body.velocity.y = -375;
+            player.body.velocity.y = -350;
         }
         
         if (!attackButton.isDown) {
             if (player.body.onFloor()) {
                 if (cursors.left.isDown) {
-                    player.body.velocity.x = -150;
+                    player.body.velocity.x = -175;
                     player.scale.setTo(-0.2, 0.2);
                     facing = -1;
                     player.play('run');
                 } else if (cursors.right.isDown) {
-                    player.body.velocity.x = 150;
+                    player.body.velocity.x = 175;
                     player.scale.setTo(0.2, 0.2);
                     facing = 1;
                     player.play('run');
