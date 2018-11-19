@@ -2,9 +2,9 @@ var tutorial = {
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 325;
-        game.world.setBounds(0,0,800,800);
+        game.world.setBounds(0,0,800,600);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        game.add.tileSprite(0, 0, 800, 800, 'background1');
+        game.add.tileSprite(0, 0, 800, 600, 'background1');
         
         // Map
         map = game.add.tilemap('tilemap');
@@ -50,7 +50,7 @@ var tutorial = {
         menuButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
         
         // Slime
-        slime = game.add.sprite(600, 600, 'slimeSprite');
+        slime = game.add.sprite(600, 400, 'slimeSprite');
         slimeWalk = slime.animations.add('slimeWalk', [0, 1, 2, 3]);
         slimeAttack = slime.animations.add('slimeAttack', [4, 5, 6]);
         slime.anchor.setTo(0.5, 0.5);
@@ -87,7 +87,7 @@ var tutorial = {
         }
         
         if (jumpButton.isDown && player.body.onFloor()) {
-            player.body.velocity.y = -350;
+            player.body.velocity.y = -330;
         }
         
         if (!attackButton.isDown) {
@@ -116,8 +116,12 @@ var tutorial = {
         
         // Pause Menu
         if (menuButton.isDown) {
-            
+            game.paused = true;
+            menu = game.add.sprite(game.world.width/2, game.world.height/2, 'menuButton');
+            menu.anchor.setTo(0.5, 0.5);
         }
+        
+        //game.input.onDown.add(this.unpause, self);
     },
     
     render: function(){
@@ -180,5 +184,11 @@ var tutorial = {
     playerDamaged: function(){
         HP -= 1;
         console.log('HP='+HP);
+    },
+    
+    unpause: function(){
+        if (game.paused){
+            
+        }
     },
 };

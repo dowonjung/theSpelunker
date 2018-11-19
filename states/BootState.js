@@ -15,6 +15,12 @@ var bootState = {
         // Health Orb
         game.load.image('healthOrb', 'assets/sprites/health_orb.png');
         
+        // Title screen and Buttons
+        game.load.image('titleScreen', 'assets/sprites/title_screen_title_icon.png');
+        game.load.image('playButton', 'assets/sprites/title_screen_play_button.png');
+        game.load.image('tutorialButton', 'assets/sprites/tutorial_button.png');
+        game.load.image('menuButton', 'assets/sprites/exit_and_resume_buttons.png');
+        
         // Audio
         game.load.audio('mainBG', 'assets/music/bg_music.wav');
         game.load.audio('bossBG', 'assets/music/final_boss_music.wav');
