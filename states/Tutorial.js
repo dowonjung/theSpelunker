@@ -81,7 +81,8 @@ var tutorial = {
         mainBG.play();
     },
 
-    update: function() { 
+    update: function() {
+        
         // Hitboxes
         game.physics.arcade.overlap(hitbox1, slime);
         game.physics.arcade.collide(hitbox1, ground);

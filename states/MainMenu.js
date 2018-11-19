@@ -1,9 +1,9 @@
 var mainMenu = {    
     create: function(){
         // Background
-        var background = game.add.sprite(0, 0, 'titleBG');
-        background.width = game.width;
-        background.height = game.height;
+        var titleBackground = game.add.sprite(0, 0, 'titleBG');
+        titleBackground.width = game.width;
+        titleBackground.height = game.height;
         
         // Game Title
         var title = game.add.sprite(game.world.centerX, game.world.centerY-100, 'title');

@@ -6,6 +6,7 @@ var bootState = {
         
         // Tilemap and Tiles
         game.load.tilemap('tilemap', 'assets/tilemaps/theSpelunker_tilemap.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('tilemap1', 'assets/tilemaps/tilemap1.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tiles','assets/tilemaps/theSpelunker_tilemap.png');
         
         // Player

@@ -3,10 +3,10 @@ var play1 = {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 325;
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        game.add.tileSprite(0, 0, 800, 600, 'background1');
+        background = game.add.tileSprite(0, 0, 3200, 600, 'background1');
         
         // Map
-        map = game.add.tilemap('tilemap');
+        map = game.add.tilemap('tilemap1');
         map.addTilesetImage('theSpelunker_tilemap', 'tiles');
         
         ground = map.createLayer('ground');
@@ -67,7 +67,7 @@ var play1 = {
         mainBG.play();
     },
     
-    update: function(){
+    update: function(){        
         // Hitboxes
         game.physics.arcade.collide(hitbox1, ground);
         if (attacking) {
