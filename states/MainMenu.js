@@ -24,7 +24,7 @@ var mainMenu = {
     },
     
     goPlay: function(){
-        
+        game.state.start('play1');
     },
     
     goTutorial: function(){
