@@ -6,7 +6,7 @@ var mainMenu = {
         titleBackground.height = game.height;
         
         // Game Title
-        var title = game.add.sprite(game.world.centerX, game.world.centerY-100, 'title');
+        var title = game.add.sprite(400, 200, 'title');
         title.anchor.setTo(0.5, 0.5);
         title.scale.setTo(0.7, 0.7);
         
