@@ -21,13 +21,14 @@ var bootState = {
         // Title Screen and Buttons
         game.load.image('title', 'assets/sprites/title_screen_title_icon.png');
         game.load.image('playButton', 'assets/sprites/title_screen_play_button.png');
-        game.load.image('continueButton', 'assets/sprites/pause_button.png');
         game.load.image('tutorialButton', 'assets/sprites/tutorial_button.png');
         game.load.image('menuButton', 'assets/sprites/exit_and_resume_buttons.png');
+        game.load.image('gameOverButton', 'assets/sprites/gameover_button.png');
         
         // Audio
         game.load.audio('mainMusic', 'assets/music/bg_music.wav');
         game.load.audio('bossMusic', 'assets/music/final_boss_music.wav');
+        game.load.audio('swordSlash', 'assets/music/sword_slash_1.wav');
     },
     
     create: function() {

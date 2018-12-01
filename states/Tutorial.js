@@ -1,9 +1,9 @@
 var tutorial = {
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.physics.arcade.gravity.y = 500;
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.add.tileSprite(0, 0, 800, 600, 'background1');
+        game.physics.arcade.gravity.y = 1200;
         
         // Map
         map = game.add.tilemap('tilemap');
@@ -16,19 +16,26 @@ var tutorial = {
         
         // Player
         player = game.add.sprite(700, 30, 'playerSprite');
-        player.animations.add('run', [0, 1, 2, 3, 4, 5], 10, true);
-        player.animations.add('stand', [6], 1, true);
-        player.animations.add('jump', [7], 1, true);
-        playerAttack = player.animations.add('attack', [8, 9, 10], 5, false);
         player.anchor.setTo(0.5, 0.5);
         player.scale.setTo(0.15, 0.15);
         game.physics.enable(player);
         player.body.collideWorldBounds = true;
         game.camera.follow(player);
         player.body.setSize(200, 10, 120, 517);
-        
-        canAttack = true;
+        isGameOver = false;
+        attacking = false;
         facing = 1;
+        canAttack = true;
+        attackTimer = 0;
+        
+        // Player Animations
+        player.animations.add('run', [0, 1, 2, 3, 4, 5], 10, true);
+        player.animations.add('stand', [6], 1, true);
+        player.animations.add('jump', [7], 1, true);
+        playerAttack = player.animations.add('attack', [8, 9, 10], 20);
+        playerAttack.onComplete.add(function(){
+            attacking = false;
+        }, this);
         
         // Player Health
         HP = game.add.group();
@@ -39,11 +46,6 @@ var tutorial = {
             healthOrb.anchor.setTo(0.5, 0.5);
             healthOrb.scale.setTo(0.03, 0.03);
         }
-        
-        // State Text
-        stateText = game.add.text(game.world.centerX, game.world.centerY, ' ', {font: '84px Comic Sans MS', fill: '#fff'});
-        stateText.anchor.setTo(0.5, 0.5);
-        stateText.visible = false;
         
         // Hitboxes
         hitboxes = game.add.group();
@@ -76,32 +78,43 @@ var tutorial = {
         // Tutorial Text
         game.add.text(game.world.width-220, 200, 'Move: LEFT/RIGHT ARROW \nJump: SPACEBAR \nAttack: D \nMenu: M', {font: '16px Comic Sans MS', fill: '#fff'});
         
+        // Game Over Sprite
+        gameOver = game.add.sprite(game.world.centerX, game.world.centerY, 'gameOverButton');
+        gameOver.anchor.setTo(0.5, 0.5);
+        gameOver.visible = false;
+        
         // Music
         mainBG = game.add.audio('mainMusic', 1, true);
         mainBG.play();
+        swordSlash = game.add.audio('swordSlash');
     },
 
     update: function() {
+        // Timer Update
+        if(!isGameOver){
+            this.playerAttackTimer();
+        }
         
         // Hitboxes
         game.physics.arcade.overlap(hitbox1, slime);
         game.physics.arcade.collide(hitbox1, ground);
-        if (canAttack) {
+        if (attacking) {
             hitbox1.body.setSize(64, 96, 36*facing, -40);
         }
         
         // Player Attack and Movement
         game.physics.arcade.collide(player, ground);
         
-        if (attackButton.isDown) {
+        if (attackButton.isDown && canAttack) {
             player.body.velocity.x = 0;
             if (attackButton.justPressed()) {
                 this.playerAttack();
+                canAttack = false;
             }
         }
         
         if (jumpButton.isDown && player.body.onFloor()) {
-            player.body.velocity.y = -320;
+            player.body.velocity.y = -500;
         }
         
         if (!attackButton.isDown) {
@@ -138,21 +151,29 @@ var tutorial = {
         game.input.onDown.add(this.unpause, self);
     },
     
-    playerAttack: function(){
-        if (canAttack) {
-            hitbox1.body.enable = true;
-            player.play('attack');
-            canAttack = false;
-            game.time.events.add(200, function(){
-                hitbox1.body.enable = false;
-                canAttack = true;
-            }, this);
+    playerAttackTimer: function(){
+        if(!canAttack){
+            attackTimer += 1;
         }
-        playerAttack.onComplete.add(this.playerIdle, this);
+        if(attackTimer === 30){
+            canAttack = true;
+            attackTimer = 0;
+        }
     },
     
-    playerIdle: function(){
-        player.play('stand');
+    playerAttack: function(){
+        if (!attacking) {
+            attacking = true;
+            hitbox1.body.enable = true;
+            player.play('attack');
+            swordSlash.play();
+            var atkTimer = game.time.create(true);
+            atkTimer.add(200, function(){
+                attacking = false;
+                hitbox1.body.enable = false;
+            }, this);
+            atkTimer.start();
+        }
     },
 
     attackHit: function(){
@@ -203,9 +224,10 @@ var tutorial = {
         // If player is dead
         if(HP.countLiving()<1){
             player.kill();
-            stateText.text = 'GAME OVER \n Press Enter';
-            stateText.visible = true;
-            game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(this.gameOver, this);
+            isGameOver = true;
+            gameOver.visible = true;
+            gameOver.inputEnabled = true;
+            gameOver.events.onInputDown.add(this.gameOver, this);
         }
     },
     

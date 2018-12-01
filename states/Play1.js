@@ -1,8 +1,8 @@
 var play1 = {
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.physics.arcade.gravity.y = 500;
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.physics.arcade.gravity.y = 1200;
         background = game.add.tileSprite(0, 0, 3200, 600, 'background1');
         
         // Map
@@ -12,23 +12,30 @@ var play1 = {
         ground = map.createLayer('ground');
         ground.resizeWorld();
         
-        map.setCollisionBetween(1, 12, true, 'ground');
+        map.setCollisionBetween(1, 36, true, 'ground');
         
         // Player
-        player = game.add.sprite(100, 500, 'playerSprite');
-        player.animations.add('run', [0, 1, 2, 3, 4, 5], 10, true);
-        player.animations.add('stand', [6], 1, true);
-        player.animations.add('jump', [7], 1, true);
-        playerAttack = player.animations.add('attack', [8, 9, 10], 5, false);
+        player = game.add.sprite(700, 30, 'playerSprite');
         player.anchor.setTo(0.5, 0.5);
         player.scale.setTo(0.15, 0.15);
         game.physics.enable(player);
         player.body.collideWorldBounds = true;
         game.camera.follow(player);
         player.body.setSize(200, 10, 120, 517);
-        
-        canAttack = true;
+        isGameOver = false;
+        attacking = false;
         facing = 1;
+        canAttack = true;
+        attackTimer = 0;
+        
+        // Player Animations
+        player.animations.add('run', [0, 1, 2, 3, 4, 5], 10, true);
+        player.animations.add('stand', [6], 1, true);
+        player.animations.add('jump', [7], 1, true);
+        playerAttack = player.animations.add('attack', [8, 9, 10], 20);
+        playerAttack.onComplete.add(function(){
+            attacking = false;
+        }, this);
         
         // Player Health
         HP = game.add.group();
@@ -41,12 +48,6 @@ var play1 = {
             healthOrb.scale.setTo(0.03, 0.03);
             healthOrb.fixedToCamera = true;
         }
-        
-        // State Text
-        stateText = game.add.text(400, 300, ' ', {font: '84px Comic Sans MS', fill: '#fff'});
-        stateText.anchor.setTo(0.5, 0.5);
-        stateText.visible = false;
-        stateText.fixedToCamera = true;
         
         // Hitboxes
         hitboxes = game.add.group();
@@ -65,27 +66,45 @@ var play1 = {
         attackButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
         menuButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
         
+        // Game Over Sprite
+        gameOver = game.add.sprite(game.world.centerX, game.world.centerY, 'gameOverButton');
+        gameOver.anchor.setTo(0.5, 0.5);
+        gameOver.visible = false;
+        
         // Music
         mainBG = game.add.audio('mainMusic', 1, true);
         mainBG.play();
+        swordSlash = game.add.audio('swordSlash');
         
         // Slime
-        slime1 = game.add.sprite(1000, 500, 'slimeSprite');
-        slimeWalk = slime1.animations.add('slimeWalk', [0, 1, 2, 3]);
-        slimeAttack = slime1.animations.add('slimeAttack', [4, 5, 6]);
-        slime1.anchor.setTo(0.5, 0.5);
-        slime1.scale.setTo(0.15, 0.15);
-        game.physics.enable(slime1);
-        slime1.body.collideWorldBounds = true;
+        slime = game.add.group();
+        slime.enableBody = true;
+        slime.physicsBodyType = Phaser.Physics.ARCADE;
+        slime.setAll('anchor.x', 0.5);
+        slime.setAll('anchor.y', 0.5);
+        slime.setAll('scale.x', 0.15);
+        slime.setAll('scale.y', 0.15);
+        slime.setAll('outOfBoundsKill', true);
+        slime.setAll('checkWorldBounds', true);
+        slime.callAll('animations.add', 'animations', [0, 1, 2, 3], 10, true);
+        slime.callAll('animations.add', 'animations', [4, 5, 6], 5, false);
+        
+        slime1 = slime.create(100, 400, 'slimeSprite');
         slime1.body.setSize(700, 550, 0, 129);
-        this.slimeWalk(slime1);
+        
+        slime.callAll('slimeWalk', null);
     },
     
     update: function(){        
+        // Timer Update
+        if(!isGameOver){
+            this.playerAttackTimer();
+        }
+        
         // Hitboxes
         game.physics.arcade.overlap(hitbox1, slime1);
         game.physics.arcade.collide(hitbox1, ground);
-        if (canAttack) {
+        if (attacking) {
             hitbox1.body.setSize(64, 96, 36*facing, -40);
         }
         
@@ -100,7 +119,7 @@ var play1 = {
         }
         
         if (jumpButton.isDown && player.body.onFloor()) {
-            player.body.velocity.y = -320;
+            player.body.velocity.y = -500;
         }
         
         if (!attackButton.isDown) {
@@ -139,20 +158,18 @@ var play1 = {
     },
     
     playerAttack: function(){
-        if (canAttack) {
+        if (!attacking) {
+            attacking = true;
             hitbox1.body.enable = true;
             player.play('attack');
-            canAttack = false;
-            game.time.events.add(200, function(){
+            swordSlash.play();
+            var atkTimer = game.time.create(true);
+            atkTimer.add(200, function(){
+                attacking = false;
                 hitbox1.body.enable = false;
-                canAttack = true;
             }, this);
+            atkTimer.start();
         }
-        playerAttack.onComplete.add(this.playerIdle, this);
-    },
-    
-    playerIdle: function(){
-        player.play('stand');
     },
     
     attackHit: function(enemy){
@@ -169,21 +186,21 @@ var play1 = {
         // If player is dead
         if(HP.countLiving()<1){
             player.kill();
-            stateText.text = 'GAME OVER \n Press Enter';
-            stateText.visible = true;
-            game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(this.gameOver, this);
+            gameOver.visible = true;
+            gameOver.inputEnabled = true;
+            gameOver.events.onInputDown.add(this.gameOver, this);
         }
     },
     
-    slimeWalk: function(slime){
+    slimeWalk: function(){
         if (player.x <= slime.x){
             slime.body.velocity.x = -30;
             slime.scale.setTo(-0.15, 0.15);
-            slime.play('slimeWalk', 10, true);
+            slime.play('slimeWalk');
         } else {
             slime.body.velocity.x = 30;
             slime.scale.setTo(0.15, 0.15);
-            slime.play('slimeWalk', 10, true);
+            slime.play('slimeWalk');
         }
         slimeWalk.onLoop.add(this.monsterWalkLooped, this);
         slimeWalk.onComplete.add(this.slimeAttack, this);
@@ -195,15 +212,15 @@ var play1 = {
         }
     },
     
-    slimeAttack: function(slime){
+    slimeAttack: function(){
         if (player.x <= slime.x){
             slime.body.velocity.x = 0;
             slime.scale.setTo(-0.15, 0.15);
-            slime.play('slimeAttack', 5, false);
+            slime.play('slimeAttack');
         } else {
             slime.body.velocity.x = 0;
             slime.scale.setTo(0.15, 0.15);
-            slime.play('slimeAttack', 5, false);
+            slime.play('slimeAttack');
         }
         game.physics.arcade.overlap(player, slime, this.playerDamaged, null, this);
         slimeAttack.onComplete.add(this.slimeWalk, this);
