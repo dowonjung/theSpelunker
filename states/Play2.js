@@ -1,4 +1,4 @@
-var play1 = {
+var play2 = {
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -6,16 +6,16 @@ var play1 = {
         background = game.add.tileSprite(0, 0, 3200, 600, 'background1');
         
         // Map
-        map = game.add.tilemap('tilemap1');
+        map = game.add.tilemap('tilemap2');
         map.addTilesetImage('theSpelunker_tilemap', 'tiles');
         
         ground = map.createLayer('ground');
         ground.resizeWorld();
         
-        map.setCollisionBetween(1, 36, true, 'ground');
+        map.setCollisionBetween(1, 35, true, 'ground');
         
         // Player
-        player = game.add.sprite(100, 400, 'playerSprite');
+        player = game.add.sprite(100, 100, 'playerSprite');
         player.anchor.setTo(0.5, 0.5);
         player.scale.setTo(0.15, 0.15);
         game.physics.enable(player);
@@ -61,7 +61,7 @@ var play1 = {
         hitbox1.body.enable = false; 
         
         // Slime
-        slime = game.add.sprite(1000, 400, 'slimeSprite');
+        slime = game.add.sprite(2500, 400, 'slimeSprite');
         slime.anchor.setTo(0.5, 0.5);
         slime.scale.setTo(0.15, 0.15);
         game.physics.arcade.enable(slime);
@@ -74,7 +74,7 @@ var play1 = {
         this.slimeWalk();
         
         // Bat
-        bat = game.add.sprite(2700, 100, 'batSprite');
+        bat = game.add.sprite(400, 100, 'batSprite');
         bat.anchor.setTo(0.5, 0.5);
         bat.scale.setTo(0.1, 0.1);
         game.physics.arcade.enable(bat);
@@ -178,12 +178,6 @@ var play1 = {
         game.physics.arcade.collide(bat, ground);
         
         game.physics.arcade.overlap(player, bat, this.playerDamaged, null, this);
-        
-        // Next Level
-        if(player.x >= 3150){
-            mainBG.stop();
-            game.state.start('play2');
-        }
     },
     
     render: function(){

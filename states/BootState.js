@@ -7,13 +7,15 @@ var bootState = {
         // Tilemap and Tiles
         game.load.tilemap('tilemap', 'assets/tilemaps/theSpelunker_tilemap.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.tilemap('tilemap1', 'assets/tilemaps/tilemap1.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('tilemap2', 'assets/tilemaps/tilemap2.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tiles','assets/tilemaps/theSpelunker_tilemap.png');
         
         // Player
         game.load.spritesheet('playerSprite','assets/spritesheets/player_animation_spritesheet.png', 500, 527);
         
-        // Monsters
+        // Enemies
         game.load.spritesheet('slimeSprite','assets/spritesheets/slime_spritesheet_combined.png',599,679);
+        game.load.spritesheet('batSprite', 'assets/spritesheets/bat_animation.png', 977, 1200);
         
         // Health Orb
         game.load.image('healthOrb', 'assets/sprites/health_orb.png');

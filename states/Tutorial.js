@@ -42,7 +42,7 @@ var tutorial = {
         game.add.text(10, 10, 'Lives: ', {font: '24px Comic Sans MS', fill: '#fff'});
         
         for(var i=0; i<5; i++){
-            var healthOrb = HP.create(90+(35*i), 30, 'healthOrb');
+            var healthOrb = HP.create(230-(35*i), 30, 'healthOrb');
             healthOrb.anchor.setTo(0.5, 0.5);
             healthOrb.scale.setTo(0.03, 0.03);
         }
@@ -56,7 +56,8 @@ var tutorial = {
         hitbox1.anchor.setTo(0.5, 0.5);
         hitbox1.body.onOverlap = new Phaser.Signal();
         hitbox1.body.onOverlap.add(this.attackHit);
-        hitbox1.body.enable = false;        
+        hitbox1.body.enable = false;
+        damagedOnce = false;
         
         // Keyboard
         cursors = game.input.keyboard.createCursorKeys();
@@ -73,6 +74,7 @@ var tutorial = {
         game.physics.enable(slime);
         slime.body.collideWorldBounds = true;
         slime.body.setSize(700, 550, 0, 129);
+        slime.health = 3;
         this.slimeWalk();
         
         // Tutorial Text
@@ -168,7 +170,7 @@ var tutorial = {
             player.play('attack');
             swordSlash.play();
             var atkTimer = game.time.create(true);
-            atkTimer.add(200, function(){
+            atkTimer.add(100, function(){
                 attacking = false;
                 hitbox1.body.enable = false;
             }, this);
@@ -176,8 +178,13 @@ var tutorial = {
         }
     },
 
-    attackHit: function(){
-        slime.kill();
+    attackHit: function(self, enemy){
+        enemy.health -= 1;
+        console.log(enemy.health);
+        
+        if(enemy.health === 0){
+            enemy.kill();
+        }
     },
     
     slimeWalk: function(){
